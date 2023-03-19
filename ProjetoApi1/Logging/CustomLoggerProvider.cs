@@ -2,7 +2,7 @@
 
 namespace ProjetoApi1.Logging
 {
-    public class CustomLoggerProvider : ILoggerProvider
+    /*public class CustomLoggerProvider : ILoggerProvider
     {
         readonly CustomloggerProviderConfiguration loggerConfig;
         readonly ConcurrentDictionary<string, CustomerLogger> loggers =
@@ -21,5 +21,5 @@ namespace ProjetoApi1.Logging
         {
            loggers.Clear();
         }
-    }
+    }*/
 }

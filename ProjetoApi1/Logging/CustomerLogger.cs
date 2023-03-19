@@ -3,7 +3,7 @@ using NuGet.Common;
 
 namespace ProjetoApi1.Logging
 {
-    public class CustomerLogger : Microsoft.Extensions.Logging.ILogger
+    /*public class CustomerLogger : Microsoft.Extensions.Logging.ILogger
     {
         public CustomerLogger(string name, CustomloggerProviderConfiguration config)
         {
@@ -52,5 +52,5 @@ namespace ProjetoApi1.Logging
                 }
             }
         }
-    }
+    }*/
 }

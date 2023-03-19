@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjetoApi1.Context;
 using ProjetoApi1.Extensions;
 using ProjetoApi1.Filters;
+using ProjetoApi1.Repository;
 using ProjetoApi1.Services;
 using System.Text.Json.Serialization;
 
@@ -18,12 +19,14 @@ builder.Services.AddSwaggerGen();
 
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 
+
 builder.Services.AddDbContext<AppDbContext>(options => 
                     options.UseMySql(mySqlConnection, 
                     ServerVersion.AutoDetect(mySqlConnection)));
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IMeuServico, MeuServico>();
-builder.Services.AddScoped<ApilogginFilter>();
+//builder.Services.AddScoped<ApilogginFilter>();
 
 var app = builder.Build();
 
