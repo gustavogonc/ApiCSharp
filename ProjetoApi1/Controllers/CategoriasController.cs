@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoApi1.Context;
 using ProjetoApi1.Models;
+using ProjetoApi1.Services;
 
 namespace ProjetoApi1.Controllers
 {
@@ -11,15 +12,32 @@ namespace ProjetoApi1.Controllers
     public class CategoriasController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger _logger;
 
-        public CategoriasController(AppDbContext context)
+        [HttpGet("autor")]
+        public string GetAutor()
+        {
+            var autor = _configuration["autor"];
+            var conexao = _configuration["ConnectionStrings:DefaultConnection"];
+            return $"Autor: {autor} Conexao: {conexao}";
+        }
+        public CategoriasController(AppDbContext context, IConfiguration configuration, ILogger<CategoriasController> logger)
         {
             _context = context;
+            _configuration = configuration;
+            _logger = logger;
+        }
+        [HttpGet("saudacao/{nome}")]
+        public ActionResult<string> GetSaudacao([FromServices] IMeuServico meuservico, string nome)
+        {
+            return meuservico.Saudacao(nome);
         }
 
-        [HttpGet("produtos")]
+        [HttpGet("categorias")]
         public ActionResult<IEnumerable<Categoria>> GetCategoriasProdutos()
         {
+            _logger.LogInformation("================GET api/categorias/produtos ================");
             //return _context.Categorias.Include(p => p.Produtos).ToList();
             return _context.Categorias.Include(p => p.Produtos).Where(c => c.CategoriaId <= 5).ToList();
         }
@@ -29,6 +47,8 @@ namespace ProjetoApi1.Controllers
         {
             try
             {
+                _logger.LogInformation("================GET api/categorias ================");
+
                 var categoria = _context.Categorias.AsNoTracking().ToList();
                 if (categoria is null)
                 {
@@ -39,7 +59,7 @@ namespace ProjetoApi1.Controllers
             catch (Exception)
             {
 
-                return StatusCode(StatusCodes.Status500InternalServerError, 
+                return StatusCode(StatusCodes.Status500InternalServerError,
                     "Ocorreu um problema ao tratar a sua solicitação.");
             }
         }
@@ -50,8 +70,12 @@ namespace ProjetoApi1.Controllers
             try
             {
                 var categoria = _context.Categorias.FirstOrDefault(p => p.CategoriaId == id);
+
+                _logger.LogInformation($"================GET api/categorias/id = {id} ================");
+
                 if (categoria is null)
                 {
+                    _logger.LogInformation($"================GET api/categorias/id = {id} NOT FOUND ================");
                     return NotFound($"Categoria com id = {id} não encontrada...");
                 }
                 return Ok(categoria);

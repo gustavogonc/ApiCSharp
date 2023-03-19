@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ProjetoApi1.Context;
+using ProjetoApi1.Extensions;
+using ProjetoApi1.Filters;
+using ProjetoApi1.Services;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +22,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseMySql(mySqlConnection, 
                     ServerVersion.AutoDetect(mySqlConnection)));
 
+builder.Services.AddTransient<IMeuServico, MeuServico>();
+builder.Services.AddScoped<ApilogginFilter>();
 
 var app = builder.Build();
 
@@ -28,6 +33,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//adiciona o middleware de tratamento de erro
+app.ConfigureExceptionHandler();
 
 app.UseHttpsRedirection();
 
